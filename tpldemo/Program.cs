@@ -5,25 +5,18 @@ namespace tpldemo
 {
 
 
-   
-
-
-
-
-
-
     class Program
     {
 
 
-        protected static int origRow;
-        protected static int origCol;
+        protected  static int OrigRow { get; set; }
+        protected  static int OrigCol { get; set; }
 
         protected static void WriteAt(string s, int x, int y)
         {
             try
             {
-                Console.SetCursorPosition(origCol + x, origRow + y);
+                Console.SetCursorPosition(OrigCol + x, OrigRow + y);
                 Console.Write(s);
             }
             catch (ArgumentOutOfRangeException e)
@@ -39,8 +32,8 @@ namespace tpldemo
         {
             // Main menu
             Console.Clear();
-            origRow = Console.CursorTop;
-            origCol = Console.CursorLeft;
+            OrigRow = Console.CursorTop;
+            OrigCol = Console.CursorLeft;
             var horizPos = 22;
             WriteAt("TPL demo", 33, 2);
             WriteAt("1 ....... Sequential For", horizPos, 4);
@@ -59,48 +52,46 @@ namespace tpldemo
             var demo = new Demos();
             Boolean exit = false;
             ConsoleKeyInfo option;
-            string timeEllapsed=null;
-            double nPrimes;
+
+           
             while (!exit)
             {
                 MainMenu();
                 Console.CursorVisible = false;
-                do
-                {
-                    option = Console.ReadKey(true);
-                } while (option.KeyChar < '0' || option.KeyChar > '5');
+                option = Console.ReadKey(true);
                 bool showTime = true;
-
 
                 switch (option.KeyChar)
                 {
                     case '1':
-                        WriteAt("Calculando......", 22, 16);
-                        timeEllapsed = demo.SequentialFor(out nPrimes);
+                        WriteAt("Working......", 22, 16);
+                        demo.SequentialFor();
                         break;
                     case '2':
-                        WriteAt("Calculando......", 22, 16);
-                        timeEllapsed = demo.ParallelFor(out nPrimes);
+                        WriteAt("Working......", 22, 16);
+                        demo.ParallelFor();
                         break;
                     case '3':
-                        WriteAt("Calculando......", 22, 16);
-                        timeEllapsed = demo.Linq(out nPrimes);
+                        WriteAt("Working......", 22, 16);
+                        demo.Linq();
                         break;
                     case '4':
-                        WriteAt("Calculando......", 22, 16);
-                        timeEllapsed = demo.PLinq(out nPrimes);
+                        WriteAt("Working......", 22, 16);
+                        demo.PLinq();
                         break;
                     case '0':
-                        WriteAt("Calculando......", 22, 16);
                         exit = true;
                         showTime = false; 
                         break;
-                    
+                    default:
+                        showTime = false;
+                        break;
 
                 }
                 if (showTime)
                 {
-                    WriteAt($"Ellapsed time {timeEllapsed}ms <Press a key>", 22, 16);
+                    WriteAt($"{demo.TotalPrimesNumbers} primes numbers detected in {demo.EllapsedTime} ms ", 15, 16);
+                    WriteAt("<Press any key to continue>", 22, 17);
                     Console.ReadKey();
                 }
             }

@@ -12,16 +12,16 @@ namespace tpldemo
         public static bool IsPrime(this int n) //1 = false, 2 = true, 3 = true...
         {
             if (n <= 1) return false;
-            if ((n & 1) == 0)
+            if ((n & 1) == 0) // n is even
             {
                 if (n == 2) return true;
                 else return false;
             }
-            for (int i = 3; (i * i) <= n; i += 2)
+            for (int i = 3; (i * i) <= n; i += 2) 
             {
                 if ((n % i) == 0) return false;
             }
-            return n != 1;
+            return true;
         }
     }
 
@@ -29,10 +29,14 @@ namespace tpldemo
 
     public class Demos
     {
+        // Private attributes
         private const long N = 1000000;
         private Stopwatch clock = new Stopwatch();
         private int[] numbers = new int[N];
-       
+
+        //Public Properties
+        public string EllapsedTime { get; protected set; }
+        public long TotalPrimesNumbers { get; protected set; }
 
         public Demos()
         {
@@ -44,21 +48,22 @@ namespace tpldemo
         }
 
 
-         public string SequentialFor(out double nPrimes)
+         public void SequentialFor()
         {
-            nPrimes = 0;
+            TotalPrimesNumbers = 0;
             clock.Restart();
             for (long i = 0; i < N; i++)
             {
                 if (numbers[i].IsPrime())
-                    nPrimes++;
+                    TotalPrimesNumbers += 1;
             }
             clock.Stop();
-            return clock.ElapsedMilliseconds.ToString();
+            EllapsedTime = clock.ElapsedMilliseconds.ToString();
+
         }
 
 
-         public string ParallelFor(out double nPrimes)
+         public void ParallelFor()
         {
             int temp = 0;
             clock.Restart();
@@ -68,12 +73,12 @@ namespace tpldemo
                     temp++;
             });
             clock.Stop();
-            nPrimes = temp;
-            return clock.ElapsedMilliseconds.ToString();
+            TotalPrimesNumbers = temp;
+            EllapsedTime = clock.ElapsedMilliseconds.ToString();
         }
 
 
-         public string Linq(out double nPrimes)
+         public void Linq()
         {
 
             clock.Restart();
@@ -81,13 +86,13 @@ namespace tpldemo
                 from n in numbers
                 where n.IsPrime()
                 select n;
-            nPrimes = query.Count();
+            TotalPrimesNumbers = query.Count();
             clock.Stop();
-            return clock.ElapsedMilliseconds.ToString();
+            EllapsedTime = clock.ElapsedMilliseconds.ToString();
         }
 
 
-         public string PLinq(out double nPrimes)
+         public void PLinq()
         {
 
             clock.Restart();
@@ -95,9 +100,9 @@ namespace tpldemo
                 from n in numbers.AsParallel()
                 where n.IsPrime()
                 select n;
-            nPrimes = query.Count();
+            TotalPrimesNumbers = query.Count();
             clock.Stop();
-            return clock.ElapsedMilliseconds.ToString();
+            EllapsedTime = clock.ElapsedMilliseconds.ToString();
         }
 
     }
