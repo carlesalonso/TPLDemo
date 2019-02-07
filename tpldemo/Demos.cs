@@ -27,7 +27,7 @@ namespace tpldemo
 
 
 
-    public class Demos
+    public class Demos:IDemos
     {
         // Private attributes
         private const long N = 1000000;
